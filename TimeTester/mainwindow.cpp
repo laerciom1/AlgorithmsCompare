@@ -1,9 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sstream"
-#include "string"
-#include "iostream"
+#include "algorithms.h"
 #include <QVector>
+
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -26,26 +27,31 @@ void MainWindow::on_btExecute_clicked()
     QString begin = dimensions.at(1);
     QString end = dimensions.at(2);
     int n = ((end.toInt() - begin.toInt())/gap.toInt())+1;
-    int tamanhos[n];
+    QVector<int> tamanhos;
     for(int i = 0; i<n;i++){
-        tamanhos[i] = begin.toInt() + (i*gap.toInt());
+        tamanhos.append(begin.toInt() + (i*gap.toInt()));
     }
 
-    QString result("");                             // Testando se ta
-    for(int i = 0; i<n; i++){                       // tudo OK com os
-        QString aux = QString::number(tamanhos[i]); // valores do vetor
-        result.append(aux);                         // dos tamanhos;
-    }
-
-    ui->iterations->setText(result);                //Pra imprimir no campo de interações quando clica no Execute;
+    Algorithms alg(tamanhos, iterations);
+    QVector<int> tempos;
 
     if(ui->QuickBox->isChecked() && ui->BubbleBox->isChecked()){
-
+        tempos.append(alg.executeAll());
     }
     else if(ui->BubbleBox->isChecked()){
-
+        tempos = alg.executeBb();
     }
     else if(ui->QuickBox->isChecked()){
-
+        tempos = alg.executeQk();
     }
+
+    QString result("");
+    QString aux("");
+    for(int i=0;i<tempos.size();i++){
+        aux = QString::number(tempos[i]) + " ";
+        result.append(aux);
+    }
+
+    ui->testes->setText(result);
+
 }
