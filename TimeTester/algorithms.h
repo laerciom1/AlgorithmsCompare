@@ -2,6 +2,7 @@
 #define ALGORITHMS
 
 #include <QVector>
+#include <QProgressBar>
 
 class Algorithms{
     private:
@@ -9,9 +10,9 @@ class Algorithms{
         int iteracoes;
     public:
         Algorithms(QVector<int> t, int i);
-        QVector<int> executeQk();
-        QVector<int> executeBb();
-        QVector<int> executeAll();
+        QVector<double> executeQk(QProgressBar *pb);
+        QVector<double> executeBb(QProgressBar *pb);
+        QVector<double> executeAll(QProgressBar *pb);
         void quick(int *v, int e, int d);
         void bubble(int *list, int n);
         QVector<int> getTamanhos();

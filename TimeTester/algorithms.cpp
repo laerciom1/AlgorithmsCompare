@@ -6,8 +6,11 @@ Algorithms::Algorithms(QVector<int> t, int i){
     this->tamanhos = t;
     this->iteracoes = i;
 };
-QVector<int> Algorithms::executeQk(){
-    QVector<int> tempos;
+QVector<double> Algorithms::executeQk(QProgressBar *pb){
+    QVector<double> tempos;
+    pb->setValue(0);
+    int percentQt = 100/(tamanhos.size()*iteracoes);
+    int percent = 0;
     srand(time(NULL));
     for(int tam=0; tam<tamanhos.size();tam++){                          //Para cada tamanho de vetor especificado
         for(int v=0;v<this->iteracoes;v++){                             //n iteracoes
@@ -19,13 +22,18 @@ QVector<int> Algorithms::executeQk(){
             qk.start();                                                 //Pegando tempo atual
             quick(vetor1, vetor1[0], vetor1[this->tamanhos[tam]-1]);    //Executa o algoritmo
             tempos.append(qk.elapsed());                                //Pega tempo em milisegundos (/ 1000 para deixar em segundos)
+            percent+=percentQt;
+            pb->setValue(percent);
         }
     }
     return tempos;
 };
 
-QVector<int> Algorithms::executeBb(){
-    QVector<int> tempos;
+QVector<double> Algorithms::executeBb(QProgressBar *pb){
+    QVector<double> tempos;
+    pb->setValue(0);
+    int percentQt = 100/(tamanhos.size()*iteracoes);
+    int percent = 0;
     srand(time(NULL));
     for(int tam=0; tam<tamanhos.size();tam++){                          //Para cada tamanho de vetor especificado
         for(int v=0;v<this->iteracoes;v++){                             //n iteracoes
@@ -37,13 +45,39 @@ QVector<int> Algorithms::executeBb(){
             bb.start();                                                 //Pegando tempo atual
             bubble(vetor1, this->tamanhos[tam]);                        //Executa o algoritmo
             tempos.append(bb.elapsed());                                //Pega tempo em milisegundos (/ 1000 para deixar em segundos) e adiciona ao vetor;
+            percent+=percentQt;
+            pb->setValue(percent);
         }
     }
     return tempos;
 };
 
-QVector<int> Algorithms::executeAll(){
-    QVector<int> tempos;
+QVector<double> Algorithms::executeAll(QProgressBar *pb){
+    QVector<double> tempos;
+    pb->setValue(0);
+    int percentQt = 100/(tamanhos.size()*iteracoes);
+    int percent = 0;
+    srand(time(NULL));
+    for(int tam=0; tam<tamanhos.size();tam++){                          //Para cada tamanho de vetor especificado
+        for(int v=0;v<this->iteracoes;v++){                             //n iteracoes
+            int vetor1[this->tamanhos[tam]];
+            int vetor2[this->tamanhos[tam]];                            //Declarando vetor do tamanho especificado
+            for(int l=0;l<this->tamanhos[tam];l++){                     //Enxendo os vetores
+                vetor1[l] = (rand() % (this->tamanhos[tam])) + 1;       //com valores aleatorios
+                vetor2[l] = vetor1[l];                                  //e iguais
+            }
+            QTime bb;                                                   //Variavel para pegar o tempo do bubble
+            bb.start();                                                 //Pegando tempo atual
+            bubble(vetor2, this->tamanhos[tam]);                        //Executa o algoritmo
+            tempos.append(bb.elapsed());                                //Pega tempo em milisegundos e adiciona ao vetor (valores pares, iniciando com 0);
+            QTime qk;                                                   //Variavel para pegar o tempo
+            qk.start();                                                 //Pegando tempo atual
+            quick(vetor1, vetor1[0], vetor1[this->tamanhos[tam]-1]);    //Executa o algoritmo
+            tempos.append(qk.elapsed());                                //Pega tempo em milisegundos e adiciona ao vetor (valores impares, iniciando com 1);
+            percent+=percentQt;
+            pb->setValue(percent);
+        }
+    }
     return tempos;
 };
 
